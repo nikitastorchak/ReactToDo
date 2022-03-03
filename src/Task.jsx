@@ -1,34 +1,50 @@
-import React from 'react'
-import { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
+import { useState } from 'react';
 
-const Task = ({tasks}) => {
-  const [editTask, setEditTask] = useState(null);
+const Task = ({tasks, setTasks, setActive, setEditTask, setIdx}) => {
   const onChangeCheckbox = async (id, checked) => {
     await axios.patch('http://localhost:8000/update', {
       _id: id,
       isChecked: !checked
+    }).then(res => {});
+  };
+
+  const deleteTask = async (tasks, _id) => {
+    console.log(_id)
+    await axios.delete(`http://localhost:8000/delete?_id=${_id}`, {
     }).then(res => {
-    })
-  }
+      const deleteTask = tasks.filter((task) => task._id !== _id);
+      setTasks(deleteTask);
+    });
+  };
+  tasks.sort((a, b) => {
+    if (a.isChecked === b.isChecked) return 0;
+    return (a.isChecked > b.isChecked ? 1 : -1);
+  });
+
   return (
     tasks.map((item, index) => (
       <div className='card' key={(`card-${index}`)}>
-          <h1 className='cardTitle'>Title
-            <div className='iconWrap'>
-              <svg onClick={() => setEditTask(item._id)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M224 0H336C362.5 0 384 21.49 384 48V256H0V48C0 21.49 21.49 0 48 0H64L96 64L128 0H160L192 64L224 0zM384 288V320C384 355.3 355.3 384 320 384H256V448C256 483.3 227.3 512 192 512C156.7 512 128 483.3 128 448V384H64C28.65 384 0 355.3 0 320V288H384zM192 464C200.8 464 208 456.8 208 448C208 439.2 200.8 432 192 432C183.2 432 176 439.2 176 448C176 456.8 183.2 464 192 464z"/></svg>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M448 32C483.3 32 512 60.65 512 96V416C512 451.3 483.3 480 448 480H64C28.65 480 0 451.3 0 416V96C0 60.65 28.65 32 64 32H448zM175 208.1L222.1 255.1L175 303C165.7 312.4 165.7 327.6 175 336.1C184.4 346.3 199.6 346.3 208.1 336.1L255.1 289.9L303 336.1C312.4 346.3 327.6 346.3 336.1 336.1C346.3 327.6 346.3 312.4 336.1 303L289.9 255.1L336.1 208.1C346.3 199.6 346.3 184.4 336.1 175C327.6 165.7 312.4 165.7 303 175L255.1 222.1L208.1 175C199.6 165.7 184.4 165.7 175 175C165.7 184.4 165.7 199.6 175 208.1V208.1z"/></svg>
+          <h1 className='cardTitle'>Task {index + 1}
+            <div className='iconWrap'>        
+            {
+              item.isChecked ? <></> : 
+              <svg onClick={() => {setActive(true); setEditTask(item.name); setIdx(item)} } xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M224 0H336C362.5 0 384 21.49 384 48V256H0V48C0 21.49 21.49 0 48 0H64L96 64L128 0H160L192 64L224 0zM384 288V320C384 355.3 355.3 384 320 384H256V448C256 483.3 227.3 512 192 512C156.7 512 128 483.3 128 448V384H64C28.65 384 0 355.3 0 320V288H384zM192 464C200.8 464 208 456.8 208 448C208 439.2 200.8 432 192 432C183.2 432 176 439.2 176 448C176 456.8 183.2 464 192 464z"/>
+              </svg>         
+            }          
+            <svg onClick={() => deleteTask(tasks, item._id) } xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M135.2 17.69C140.6 6.848 151.7 0 163.8 0H284.2C296.3 0 307.4 6.848 312.8 17.69L320 32H416C433.7 32 448 46.33 448 64C448 81.67 433.7 96 416 96H32C14.33 96 0 81.67 0 64C0 46.33 14.33 32 32 32H128L135.2 17.69zM31.1 128H416V448C416 483.3 387.3 512 352 512H95.1C60.65 512 31.1 483.3 31.1 448V128zM111.1 208V432C111.1 440.8 119.2 448 127.1 448C136.8 448 143.1 440.8 143.1 432V208C143.1 199.2 136.8 192 127.1 192C119.2 192 111.1 199.2 111.1 208zM207.1 208V432C207.1 440.8 215.2 448 223.1 448C232.8 448 240 440.8 240 432V208C240 199.2 232.8 192 223.1 192C215.2 192 207.1 199.2 207.1 208zM304 208V432C304 440.8 311.2 448 320 448C328.8 448 336 440.8 336 432V208C336 199.2 328.8 192 320 192C311.2 192 304 199.2 304 208z"/>
+            </svg>
             </div>
           </h1>
-          {editTask !== item._id ?
-                  <p key={(`card-${index}`)} className={!item.isChecked ? 'cardTask' : 'cardTask checked'}>{item.name}</p>
-                  :
-                  <input id='name' name='name' className='textbox' placeholder='Введите задание' />
-          }                   
+          <p key={(`card-${index}`)} className={!item.isChecked ? 'cardTask' : 'cardTask checked'}>{item.name}</p>
           <input id={(`cardChecker-${index}`)} className='cardChecker' type={'checkbox'} checked={item.isChecked}  onChange={() => onChangeCheckbox(item._id, item.isChecked)}  />
           <label htmlFor={(`cardChecker-${index}`)}></label>
       </div>
-    ))  
-  )
-}
-export default Task
+    )) 
+  );
+};
+
+export default Task;

@@ -3,6 +3,59 @@ main {
   flex-direction: row;
 }
 
+.modal {
+  width: 100vw;
+  position: fixed;
+  z-index: 9999;
+  height: 100vh;
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.562);
+  opacity: 0;
+  pointer-events: none;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s;
+}
+
+.modalTitle {
+  width: 100%;
+  background-color: #b3a4eb;
+  padding: 0px;
+  display: flex;
+  padding: 10px 0 10px 0;
+  border-radius: 5px 5px 0 0;
+  justify-content: space-between;
+  .iconEditWrap {
+    margin-right: 10px;
+  }
+  h1 {
+    color: #fff;
+    margin: 0;
+    margin-left: 10px;
+  }
+}
+
+.modal.active {
+  pointer-events: all;
+  opacity: 1;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  width: 40vw;
+  height: auto;
+  border-radius: 5px;
+  transform: scale(0.5);
+  transition: 0.2s;
+}
+
+.modalContent.active {
+  transform: scale(1);
+}
 @keyframes pop {
   from {
     transform: scale(1);
@@ -52,6 +105,7 @@ main {
   align-items: center;
   justify-content: center;
 }
+
 .right {
   background-color: #534C6C;
   height: 100vh;
@@ -112,6 +166,7 @@ form {
 .cardTask{
   color: #534C6C;
   text-align: center;
+  overflow-wrap: anywhere;
   padding: 10px;
 }
 
@@ -173,7 +228,7 @@ svg:hover {
   height: 1em;
   flex-shrink: 0;
   flex-grow: 0;
-  border: 1px solid #534C6C;
+  border: 1px solid #534c6c36;
   border-radius: 0.25em;
   margin-right: 0.5em;
   background-repeat: no-repeat;
