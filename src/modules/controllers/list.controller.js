@@ -27,7 +27,7 @@ module.exports.update = (req, res) => {
     Task.updateOne({_id: body._id}, {
       $set: {
         name: body.name,
-        isChecked: isChecked
+        isChecked: body.isChecked
       },
     }).then(result => {
       Task.find().then((result) => {
@@ -39,7 +39,7 @@ module.exports.update = (req, res) => {
 module.exports.del = (req, res) => {
   const id = req.query._id;
   if (id) {
-    Places.deleteOne({ _id: id }).then((result) => {     
+    Task.deleteOne({ _id: id }).then((result) => {     
       res.send(result);
     }).catch((err) => {
         res.send(err);
